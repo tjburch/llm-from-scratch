@@ -35,7 +35,7 @@ Two popular kinds of fine tuning:
 1. Instruction fine-tuning - instruction/answer pairs. "Translate" + translated text
 2. Classification fine-tuning - texts and associated class labels. "Spam" vs "Not Spam," or "describes hot dog" vs "does not describe hot dog."
 
-## 1.4 Introducitng the Transformer Architecture
+## 1.4 Introducing the Transformer Architecture
 
 [Attention is All You Need](https://arxiv.org/abs/1706.03762)
 
@@ -52,3 +52,30 @@ GPT is good at both:
 - Zero-Shot learning - generalize with no examples
 - Few-shot - a couple of examples to generalize from
 
+## 1.5 Utilizing Large Datasets
+
+GPT 3 is trained on 300 billion tokens, from a dataset comprised of 500 billion tokens (some pre-filtering or something), 60% of which is CommonCrawl 
+
+
+Pretraining costs a ton - GPT-3 was like $4.6 milli in cloud compute. Thank goodness for fine tuning.
+
+## 1.6 A Closer Look at the GPT Architecture
+
+[Original Paper, Radford et al](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf)
+
+ChatGPT is fine-tuned GPT-3 on an instruction dataset using methods in [OpenAI's InstructGPT paper](https://arxiv.org/abs/2203.02155)
+
+Next-word prediction is self-supervised learning - don't need labels, learn from structure.
+
+Architecture is far larger than the original transformer, which was 6 encoder/decoder pairs. GPT-3 has 96 transformer layers and 175 billion total parameters.
+
+
+GPT is dated by now, but others are based on same underlying concepts.
+
+## 1.7 Building a Large Language Model
+
+What we'll do:
+
+- Stage 1 - learn the fundamental preprocessing steps and code the attention mechanism
+- Stage 2 - code + pre-train a GPT-like LLM. Use a small dataset because we're not rich lol
+- Stage 3 - Fine tune a pre-trained LLM

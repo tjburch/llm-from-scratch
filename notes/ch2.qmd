@@ -1,0 +1,63 @@
+---
+title: "Chapter 2: Working With Text Data"
+date: "November 14, 2025"
+execute:
+    echo: true
+jupyter: llm-scratch
+---
+
+Looks like the focus is mostly tokenization.
+
+## 2.1 Understanding Word Embeddings
+
+
+Text is categorical. Need to represent as a continuous-valued vector.
+
+Data -> vector is "embedding." Mapping from discrete objects to points in a continuous vector space.
+
+Typically words, but you can do larger chunks of text, popular in retrieval-augmented generation.
+
+Several frameworks, Word2Vec is an earlier one.
+
+
+## 2.2 Tokenizing Text
+
+Typically words, special characters, punctuation.
+
+```{python}
+import urllib.request
+url = ("https://raw.githubusercontent.com/rasbt/"
+       "LLMs-from-scratch/main/ch02/01_main-chapter-code/"
+       "the-verdict.txt")
+file_path = "the-verdict.txt"
+urllib.request.urlretrieve(url, file_path)
+
+# Open and read
+with open("the-verdict.txt", "r", encoding="utf-8") as f:
+    raw_text = f.read()
+print("Total number of character:", len(raw_text))
+print(raw_text[:99])
+```
+
+Aim to tokenize all those characters into an embedding. Trainings often are millions of books and articles, but for educational reasons, one is fine.
+
+Use regular expressions. Gives some trivial examples, e.g. splitting on everything.
+
+``` python
+import re
+text = "Hello, world. This, is a test."
+result = re.split(r'(\s)', text)
+print(result)
+```
+
+Adding handling for:
+1. Whitespace
+2. Punctuation
+
+
+``` python
+text = "Hello, world. Is this-- a test?"
+result = re.split(r'([,.:;?_!"()\']|--|\s)', text)
+result = [item.strip() for item in result if item.strip()] # Whitespace
+print(result)
+```
