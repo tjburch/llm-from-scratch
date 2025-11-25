@@ -43,7 +43,7 @@ Aim to tokenize all those characters into an embedding. Trainings often are mill
 
 Use regular expressions. Gives some trivial examples, e.g. splitting on everything.
 
-``` python
+```{python}
 import re
 text = "Hello, world. This, is a test."
 result = re.split(r'(\s)', text)
@@ -54,10 +54,82 @@ Adding handling for:
 1. Whitespace
 2. Punctuation
 
+Choices on this are based on the problem.
 
-``` python
+```{python}
 text = "Hello, world. Is this-- a test?"
 result = re.split(r'([,.:;?_!"()\']|--|\s)', text)
 result = [item.strip() for item in result if item.strip()] # Whitespace
 print(result)
 ```
+
+Applying to the whole story,
+
+```{python}
+preprocessed = re.split(r'([,.:;?_!"()\']|--|\s)', raw_text)
+preprocessed = [item.strip() for item in preprocessed if item.strip()]
+print(len(preprocessed))
+```
+
+Gives a value of 4690 - that's the total number of tokens.
+
+## 2.3 Converting tokens to token IDs
+
+Next, we convert those into numbers. 
+
+```{python}
+all_words = sorted(set(preprocessed))
+vocab_size = len(all_words)
+print(vocab_size)
+```
+
+1130 distinct words.
+
+Creating a class that has an encode/decode method:
+
+```{python}
+vocab = {token:integer for integer,token in enumerate(all_words)}
+class SimpleTokenizerV1:
+    def __init__(self, vocab):
+        self.str_to_int = vocab
+        self.int_to_str = {i:s for s,i in vocab.items()}
+
+    def encode(self, text):
+        preprocessed = re.split(r'([,.?_!"()\']|--|\s)', text)
+        preprocessed = [
+            item.strip() for item in preprocessed if item.strip()
+        ]
+        ids = [self.str_to_int[s] for s in preprocessed]
+        return ids
+
+    def decode(self, ids):
+        text = " ".join([self.int_to_str[i] for i in ids]) 
+
+        text = re.sub(r'\s+([,.?!"()\'])', r'\1', text)
+        return text
+```
+
+We instantiate given a base vocab. Encode converts it to id, decode converts back to words. Applying,
+
+```{python}
+tokenizer = SimpleTokenizerV1(vocab)
+text = """"It's the last he painted, you know," 
+       Mrs. Gisburn said with pardonable pride."""
+ids = tokenizer.encode(text)
+print(ids)
+```
+
+Gives a bunch of numbers.
+
+```{python}
+print(tokenizer.decode(ids))
+```
+
+Gives the original text back. Just for fun:
+
+```{python}
+print({id_value: tokenizer.decode([id_value]) for id_value in range(1,10)})
+```
+
+All the first values are punctuation! Looks like it's basically ascii ranked.
+
